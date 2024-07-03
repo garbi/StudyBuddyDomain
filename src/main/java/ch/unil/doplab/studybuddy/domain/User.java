@@ -1,16 +1,20 @@
 package ch.unil.doplab.studybuddy.domain;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class User {
+
     private UUID uuid;
     private String firstName;
     private String lastName;
 
     private String username;
     private String email;
-
-//    private String passwordHash;
+    private int balance;
+    private Set<String> languages;
+    private Map<LocalDateTime,Lesson> lessons;
 
     public User() {
         this(null, null, null, null, null);
@@ -26,16 +30,29 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.username = username;
+        this.balance = 0;
+        this.languages = new TreeSet<>();
+        lessons = new TreeMap<>();
     }
 
-    public void replace(User user) {
+    public void replaceWith(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("user must not be null");
+        }
         this.uuid = user.uuid;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.email = user.email;
         this.username = user.username;
+        this.balance = user.balance;
+        this.languages = user.languages ;
+        this.lessons = user.lessons;
     }
-    public void merge(User user) {
+
+    public void mergeWith(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("user must not be null");
+        }
         if (user.uuid != null) {
             this.uuid = user.uuid;
         }
@@ -51,7 +68,14 @@ public class User {
         if (user.username != null) {
             this.username = user.username;
         }
+        if (!user.languages.isEmpty()) {
+            this.languages.addAll(user.languages);
+        }
+        if (!user.lessons.isEmpty()) {
+            this.lessons.putAll(user.lessons);
+        }
     }
+
     public UUID getUUID() {
         return uuid;
     }
@@ -76,6 +100,10 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -92,12 +120,104 @@ public class User {
         this.email = email;
     }
 
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void deposit(int amount) {
+        this.balance += amount;
+    }
+
+    public void withdraw(int amount) {
+        if (this.balance < amount) {
+            throw new IllegalArgumentException("Insufficient funds: CHF " + (amount - this.balance) + " are missing!");
+        }
+        this.balance -= amount;
+    }
+
     public String describe() {
         return "id=" + this.uuid + ", firstName='" + this.firstName + "', lastName='" + this.lastName + "'" +
-                ", username='" + this.username + "', email='" + this.email + "'";
+                ", username='" + this.username + "', email='" + this.email + "', balance=" + this.balance + ", languages=" + this.languages
+                + ", lessons=" + lessons;
     }
 
     public String toString() {
         return this.getClass().getSimpleName() + "{" + this.describe() + "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return getBalance() == user.getBalance() && Objects.equals(uuid, user.uuid) && Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getLanguages(), user.getLanguages());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, getFirstName(), getLastName(), getUsername(), getEmail(), getBalance(), getLanguages());
+    }
+
+    public List<String> getLanguages() {
+        return languages.stream().toList();
+    }
+
+    public void addLanguage(String language) {
+        this.languages.add(language);
+    }
+
+    public void removeLanguage(String language) {
+        this.languages.remove(language);
+    }
+
+    public boolean canCommunicateWith(User other) {
+        if (this.languages.isEmpty() || other.languages.isEmpty()) {
+            return false;
+        }
+        for (String language : this.languages) {
+            if (other.languages.contains(language)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Lesson getLesson(LocalDateTime timeslot) {
+        return lessons.get(timeslot);
+    }
+
+    public boolean putLesson(LocalDateTime timeslot, Lesson lesson) {
+        return lessons.putIfAbsent(timeslot, lesson) != null;
+    }
+
+    public boolean removeLesson(Lesson lesson) {
+        return lessons.remove(lesson.getTimeslot(), lesson);
+    }
+
+//    public void setLanguages(List<String> languages) {
+//        this.languages = Set.copyOf(languages);
+//    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = new TreeSet<>(languages);
+    }
+
+
+    public List<Lesson> getLessons() {
+        return lessons.values().stream().toList();
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons.stream().collect(Collectors.toMap(Lesson::getTimeslot, lesson -> lesson));
+    }
+
+//    public Map<LocalDateTime, Lesson> getLessons() {
+//        return lessons;
+//    }
+//    public void setLessons(Map<LocalDateTime, Lesson> lessons) {
+//        this.lessons = lessons;
+//    }
 }

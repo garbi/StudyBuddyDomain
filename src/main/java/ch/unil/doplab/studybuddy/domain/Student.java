@@ -1,10 +1,15 @@
 package ch.unil.doplab.studybuddy.domain;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Student extends User {
+
+    Set<Topic> topics;
+
     public Student() {
         super();
+        topics = new HashSet<>();
     }
 
     public Student(String firstName, String lastName, String email, String username) {
@@ -13,15 +18,32 @@ public class Student extends User {
 
     public Student(UUID id, String firstName, String lastName, String email, String username) {
         super(id, firstName, lastName, email, username);
+        topics = new HashSet<>();
     }
 
-    public void replace(Student student) {
-        super.replace(student);
-    }
-    public void merge(Student student) {
-        super.merge(student);
-    }
     public String describe() {
-        return super.describe();
+        return super.describe() + ", interests=" + topics;
+    }
+
+    public void addInterest(Topic topic) {
+        topics.add(topic);
+    }
+
+    public void removeInterest(Topic topic) {
+        topics.remove(topic);
+    }
+
+    public Set<Topic> matchInterest(Teacher teacher) {
+        var matches = topics.stream()
+                .filter(topic -> teacher.getTopics().contains(topic) &&
+                        (!teacher.getTopic(topic.getTitle()).getLevels().stream()
+                                .filter(topic.getLevels()::contains)
+                                .collect(Collectors.toSet()).isEmpty()))
+                .collect(Collectors.toSet());
+        return matches;
+    }
+
+    public List<Topic> getTopics() {
+        return new ArrayList<>(topics);
     }
 }
