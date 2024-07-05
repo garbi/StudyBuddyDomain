@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.EnumSet;
 import java.util.Random;
@@ -34,12 +33,12 @@ class LessonTest {
         math = new Topic(
                 "Math",
                 "The study of numbers, quantity, structure, space, and change.",
-                EnumSet.of(Level.INTERMEDIATE, Level.ADVANCED));
+                EnumSet.of(Level.Intermediate, Level.Advanced));
 
         theology = new Topic(
                 "Theology",
                 "The study of the nature of the divine.",
-                EnumSet.of(Level.BEGINNER, Level.INTERMEDIATE));
+                EnumSet.of(Level.Beginner, Level.Intermediate));
 
         albert = new Teacher(UUID.randomUUID(),
                 "Albert",
@@ -85,7 +84,7 @@ class LessonTest {
     void testBookingSuccess() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.ADVANCED;
+        var level = Level.Advanced;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
@@ -109,7 +108,7 @@ class LessonTest {
     @Test
     void testBookingFailure_WrongTopic() {
         var topic = theology;
-        var level = Level.ADVANCED;
+        var level = Level.Advanced;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
@@ -123,7 +122,7 @@ class LessonTest {
     @Test
     void testBookingFailure_WrongLevel() {
         var topic = math;
-        var level = Level.BEGINNER;
+        var level = Level.Beginner;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
@@ -138,7 +137,7 @@ class LessonTest {
     void testBookingFailure_NoCommunication() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.INTERMEDIATE;
+        var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeLanguage("English");
@@ -153,7 +152,7 @@ class LessonTest {
     void testBookingFailure_InsufficientFunds() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.INTERMEDIATE;
+        var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
@@ -167,7 +166,7 @@ class LessonTest {
     void testBookingFailure_StudentAlreadyBooked() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.INTERMEDIATE;
+        var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(2 * albert.getHourlyFee());
@@ -183,7 +182,7 @@ class LessonTest {
     void testBookingFailure_TeacherNotAvailable() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.INTERMEDIATE;
+        var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeTimeslot(timeslot.toLocalDate(), timeslot.getHour());
@@ -199,7 +198,7 @@ class LessonTest {
     void testBookingFailure_NullTimeslotOrTopicOrLevel() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.INTERMEDIATE;
+        var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson1 = new Lesson(null, topic, level);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson1.book(albert, paul));
@@ -227,7 +226,7 @@ class LessonTest {
     void testBookingFailure_NoLevel() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        Level level = Level.INTERMEDIATE;
+        Level level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         lesson.getTopic().getLevels().clear();
@@ -244,7 +243,7 @@ class LessonTest {
     private Lesson bookLessonSuccessfully() {
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
-        var level = Level.ADVANCED;
+        var level = Level.Advanced;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());

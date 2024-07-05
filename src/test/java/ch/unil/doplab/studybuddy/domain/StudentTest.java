@@ -31,7 +31,7 @@ class StudentTest {
         math = new Topic(
                 "Math",
                 "The study of numbers, quantity, structure, space, and change.",
-                EnumSet.of(Level.INTERMEDIATE, Level.ADVANCED));
+                EnumSet.of(Level.Intermediate, Level.Advanced));
 
         albert.addTopic(physics);
         albert.addTopic(math);
@@ -45,7 +45,7 @@ class StudentTest {
 
     @Test
     void testMatchingSuccess() {
-        paul.addInterest(new Topic("Math", null, Level.INTERMEDIATE));
+        paul.addInterest(new Topic("Math", null, Level.Intermediate));
         var matches = paul.matchInterest(albert);
         assertEquals(1, matches.size());
         assertTrue(matches.contains(math));
@@ -57,7 +57,7 @@ class StudentTest {
 
     @Test
     void testMatchingFailure_MissingTopic() {
-        paul.addInterest(new Topic("Biology", null, Level.INTERMEDIATE));
+        paul.addInterest(new Topic("Biology", null, Level.Intermediate));
         var matches = paul.matchInterest(albert);
         assertEquals(0, matches.size());
         printTopics(albert.getUsername(), albert.getTopics());
@@ -68,7 +68,7 @@ class StudentTest {
 
     @Test
     void testMatchingFailure_MissingLevel() {
-        paul.addInterest(new Topic("Math", null, Level.BEGINNER));
+        paul.addInterest(new Topic("Math", null, Level.Beginner));
         var matches = paul.matchInterest(albert);
         assertEquals(0, matches.size());
         printTopics(albert.getUsername(), albert.getTopics());

@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Topic {
+public class Topic  implements Comparable<Topic> {
 
     private String title;
     private String description;
@@ -17,16 +17,18 @@ public class Topic {
         this(null, null, EnumSet.noneOf(Level.class));
     }
 
+    public Topic(String title, String description, Level level) {
+        this(title, description, EnumSet.of(level));
+    }
+
+    public Topic(String title, Level level) {
+        this(title, null, level);
+    }
+
     public Topic(String title, String description, EnumSet<Level> levels) {
         this.title = title;
         this.description = description;
         this.levels = levels;
-    }
-
-    public Topic(String title, String description, Level level) {
-        this.title = title;
-        this.description = description;
-        this.levels = EnumSet.of(level);
     }
 
     public String getTitle() {
@@ -72,5 +74,10 @@ public class Topic {
     @Override
     public int hashCode() {
         return Objects.hashCode(getTitle());
+    }
+
+    @Override
+    public int compareTo(Topic topic) {
+        return this.title.compareTo(topic.getTitle());
     }
 }

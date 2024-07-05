@@ -9,7 +9,7 @@ public class Student extends User {
 
     public Student() {
         super();
-        topics = new HashSet<>();
+        topics = new TreeSet<>();
     }
 
     public Student(String firstName, String lastName, String email, String username) {
@@ -18,7 +18,7 @@ public class Student extends User {
 
     public Student(UUID id, String firstName, String lastName, String email, String username) {
         super(id, firstName, lastName, email, username);
-        topics = new HashSet<>();
+        topics = new TreeSet<>();
     }
 
     public String describe() {
@@ -33,6 +33,10 @@ public class Student extends User {
         topics.remove(topic);
     }
 
+    public void removeInterest(String title) {
+        topics.removeIf(topic -> topic.getTitle().equals(title));
+    }
+
     public Set<Topic> matchInterest(Teacher teacher) {
         var matches = topics.stream()
                 .filter(topic -> teacher.getTopics().contains(topic) &&
@@ -45,5 +49,14 @@ public class Student extends User {
 
     public List<Topic> getTopics() {
         return new ArrayList<>(topics);
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = new TreeSet<>(topics);
+    }
+
+    public void replaceWith(Student student) {
+        super.replaceWith(student);
+        this.topics = student.topics;
     }
 }
