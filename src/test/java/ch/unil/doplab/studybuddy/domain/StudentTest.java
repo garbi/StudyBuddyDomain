@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ch.unil.doplab.studybuddy.domain.Utils.*;
 
 class StudentTest {
     private Teacher albert;
@@ -35,6 +36,7 @@ class StudentTest {
 
         albert.addTopic(physics);
         albert.addTopic(math);
+        albert.addLanguage("English");
 
         paul = new Student(UUID.randomUUID(),
                 "Paul",
@@ -45,39 +47,63 @@ class StudentTest {
 
     @Test
     void testMatchingSuccess() {
+        printMethodName();
         paul.addInterest(new Topic("Math", null, Level.Intermediate));
-        var matches = paul.matchInterest(albert);
+        paul.addLanguage("English");
+        var matches = paul.findAffinitiesWith(albert);
         assertEquals(1, matches.size());
         assertTrue(matches.contains(math));
         printTopics(albert.getUsername(), albert.getTopics());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
-        System.out.println("------");
     }
 
     @Test
-    void testMatchingFailure_MissingTopic() {
-        paul.addInterest(new Topic("Biology", null, Level.Intermediate));
-        var matches = paul.matchInterest(albert);
+    void testMatchingFailure_NoTopics() {
+        printMethodName();
+        paul.addLanguage("English");
+        var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
         printTopics(albert.getUsername(), albert.getTopics());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
-        System.out.println("------");
+    }
+
+    @Test
+    void testMatchingFailure_NoCommunication() {
+        printMethodName();
+        paul.addInterest(new Topic("Math", null, Level.Intermediate));
+        var matches = paul.findAffinitiesWith(albert);
+        assertEquals(0, matches.size());
+        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics("matches", matches);
+    }
+
+
+        @Test
+    void testMatchingFailure_MissingTopic() {
+        printMethodName();
+        paul.addInterest(new Topic("Biology", null, Level.Intermediate));
+        var matches = paul.findAffinitiesWith(albert);
+        assertEquals(0, matches.size());
+        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics("matches", matches);
     }
 
     @Test
     void testMatchingFailure_MissingLevel() {
+        printMethodName();
         paul.addInterest(new Topic("Math", null, Level.Beginner));
-        var matches = paul.matchInterest(albert);
+        var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
         printTopics(albert.getUsername(), albert.getTopics());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
-        System.out.println("------");
     }
 
-    private void printTopics(String header, Collection<Topic> topics) {
+    private void printTopics(String header, Collection<? extends Topic> topics) {
         System.out.print(header + " = ");
         if (topics.isEmpty()) {
             System.out.println("[]");

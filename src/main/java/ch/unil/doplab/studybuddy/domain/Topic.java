@@ -31,6 +31,10 @@ public class Topic  implements Comparable<Topic> {
         this.levels = levels;
     }
 
+    public Topic clone() {
+        return new Topic(this.title, this.description, this.levels);
+    }
+
     public String getTitle() {
         return title;
     }

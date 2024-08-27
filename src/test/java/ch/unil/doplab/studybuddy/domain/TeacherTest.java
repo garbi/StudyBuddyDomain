@@ -10,6 +10,7 @@ import java.util.EnumSet;
 import java.util.Random;
 import java.util.UUID;
 
+import static ch.unil.doplab.studybuddy.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TeacherTest {
@@ -34,6 +35,7 @@ class TeacherTest {
 
     @Test
     void testRatingSuccess() {
+        printMethodName();
         System.out.println("albert is not rated yet (" + albert.getRatingAverage() + ")");
         assertEquals(Teacher.noRating, albert.getRatingAverage());
         albert.rate(Teacher.maxRating);
@@ -57,6 +59,7 @@ class TeacherTest {
 
     @Test
     void testRatingFailure() {
+        printMethodName();
         System.out.println("albert is not rated yet (" + albert.getRatingAverage() + ")");
         assertEquals(Teacher.noRating, albert.getRatingAverage());
 

@@ -9,7 +9,6 @@ public class User {
     private UUID uuid;
     private String firstName;
     private String lastName;
-
     private String username;
     private String email;
     private int balance;
@@ -134,7 +133,7 @@ public class User {
 
     public void withdraw(int amount) {
         if (this.balance < amount) {
-            throw new IllegalArgumentException("Insufficient funds: CHF " + (amount - this.balance) + " are missing!");
+            throw new IllegalStateException("Insufficient funds: CHF " + (amount - this.balance) + " are missing!");
         }
         this.balance -= amount;
     }

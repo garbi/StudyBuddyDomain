@@ -37,16 +37,21 @@ public class Student extends User {
         topics.removeIf(topic -> topic.getTitle().equals(title));
     }
 
-    public Set<Topic> matchInterest(Teacher teacher) {
-        var matches = topics.stream()
-                .filter(topic -> teacher.getTopics().contains(topic) &&
-                        (!teacher.getTopic(topic.getTitle()).getLevels().stream()
-                                .filter(topic.getLevels()::contains)
-                                .collect(Collectors.toSet()).isEmpty()))
+    public Set<Affinity> findAffinitiesWith(Teacher teacher) {
+        if (teacher == null) {
+            throw new IllegalArgumentException("teacher must not be null");
+        }
+        if (teacher.getTopics().isEmpty() || this.topics.isEmpty() || !canCommunicateWith(teacher)) {
+            return Collections.emptySet();
+        }
+        var affinities = topics.stream()
+                .filter(teacher::teaches)
+                .map(topic -> new Affinity(teacher.getTopic(topic.getTitle()), topic.getLevels().stream().findFirst().orElseThrow(() -> new NoSuchElementException("No level is specified")), this, teacher))
                 .collect(Collectors.toSet());
-        return matches;
+        return affinities;
     }
 
+    // TODO: check whether this conversion from set to list, and back, is necessary
     public List<Topic> getTopics() {
         return new ArrayList<>(topics);
     }

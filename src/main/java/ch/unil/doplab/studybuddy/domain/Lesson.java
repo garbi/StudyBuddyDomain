@@ -8,37 +8,28 @@ import java.util.UUID;
 public class Lesson {
 
     private LocalDateTime timeslot;
-    private Topic topic;
-    private UUID studentID;
-    private UUID teacherID;
-    private String teacherName;
+    private Affinity affinity;
 
     public Lesson() {
-        this(null, null, null, null, null, null);
+        this(null, null);
     }
 
     public Lesson(LocalDateTime timeslot, Topic topic, Level level) {
-        this(timeslot, topic, level, null, null, null);
-    }
-
-    public Lesson(LocalDateTime timeslot, Topic topic, Level level, UUID studentID, UUID teacherID, String teacherName) {
         this.timeslot = timeslot;
-        this.studentID = studentID;
-        this.teacherID = teacherID;
-        this.teacherName = teacherName;
-        if (topic != null && level != null) {
-            this.topic = new Topic(topic.getTitle(), topic.getDescription(), EnumSet.of(level));
-        }  else {
-            this.topic = null;
-        }
+        this.affinity = new Affinity(topic, level);
     }
 
-    public Topic getTopic() {
-        return topic;
+    public Lesson(LocalDateTime timeslot, Affinity affinity) {
+        this.timeslot = timeslot;
+        this.affinity = affinity;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
+    public Affinity getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Affinity affinity) {
+        this.affinity = affinity;
     }
 
     public LocalDateTime getTimeslot() {
@@ -53,68 +44,70 @@ public class Lesson {
         return Date.from(timeslot.atZone(java.time.ZoneId.systemDefault()).toInstant());
     }
 
+    public String getTitle() {
+        return affinity.getTitle();
+    }
+
+    public Level getLevel() {
+        return affinity.getLevel();
+    }
+
     public UUID getTeacherID() {
-        return teacherID;
+        return affinity.getTeacherID();
     }
 
     public void setStudentID(UUID studentID) {
-        this.studentID = studentID;
+        affinity.setStudentID(studentID);
     }
 
     public UUID getStudentID() {
-        return studentID;
+        return affinity.getStudentID();
     }
 
     public void setTeacherID(UUID teacherID) {
-        this.teacherID = teacherID;
+        affinity.setTeacherID(teacherID);
     }
 
     public String getTeacherName() {
-        return teacherName;
+        return affinity.getTeacherName();
     }
 
     public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+        affinity.setTeacherName(teacherName);
     }
 
     @Override
     public String toString() {
         return "Lesson{" +
                 "timeslot=" + timeslot +
-                ", topic=" + topic.getTitle() +
-                ", studentID=" + studentID +
-                ", teacherID=" + teacherID +
+                ", affinity=" + affinity +
                 '}';
     }
 
     public void book(Teacher teacher, Student student) {
-        if (timeslot == null || topic == null || topic.getLevels() == null) {
-            throw new IllegalArgumentException("timeslot, topic or level cannot be null");
-        }
-        if (topic.getLevels().size() != 1) {
-            throw new IllegalArgumentException("there must be exactly one level in the lesson");
-        }
         if (teacher == null || student == null) {
-            throw new IllegalArgumentException("teacher or student cannot be null");
+            throw new IllegalArgumentException("Teacher or student cannot be null");
+        }
+        if (timeslot == null || affinity == null || affinity.getTitle() == null || affinity.getLevel() == null) {
+            throw new IllegalStateException("Timeslot, topic or level cannot be null");
         }
         if (!teacher.canCommunicateWith(student)) {
-            throw new IllegalArgumentException(teacher.getUsername() + " and " + student.getUsername()  + " cannot communicate");
+            throw new IllegalStateException(teacher.getFullName() + " and " + student.getFullName()  + " cannot communicate");
         }
         if (student.getBalance() < teacher.getHourlyFee()) {
-            throw new IllegalArgumentException(student.getUsername() + " has insufficient funds");
+            throw new IllegalStateException("Student " + student.getFullName() + " has insufficient funds");
         }
         if (student.getLesson(timeslot) != null) {
-            throw new IllegalArgumentException(student.getUsername() + " already has a lesson at this time");
+            throw new IllegalStateException("Student " + student.getFullName() + " already has a lesson at this time");
         }
         if (!teacher.isAvailable(timeslot)) {
-            throw new IllegalArgumentException(teacher.getUsername() + " has no availability at this time");
+            throw new IllegalStateException("Teacher " + teacher.getFullName() + " has no availability at this time");
         }
-        if(!teacher.teaches(topic)) {
-            throw new IllegalArgumentException(teacher.getUsername() + " does not teach " + topic.getTitle() + " at " + topic.getLevels());
+        if(!teacher.teaches(affinity)) {
+            throw new IllegalStateException("Teacher " + teacher.getFullName() + " does not teach " + affinity.getTitle() + " at " + affinity.getLevel());
         }
-        studentID = student.getUUID();
-        teacherID = teacher.getUUID();
-        teacherName = teacher.getFullName();
+        affinity.setStudent(student);
+        affinity.setTeacher(teacher);
         student.withdraw(teacher.getHourlyFee());
         teacher.deposit(teacher.getHourlyFee());
         teacher.putLesson(this.getTimeslot(), this);
@@ -126,17 +119,17 @@ public class Lesson {
         if (teacher == null || student == null) {
             throw new IllegalArgumentException("teacher or student cannot be null");
         }
-        if (!teacher.getUUID().equals(teacherID)) {
-            throw new IllegalArgumentException("lesson is not with " + teacher.getUsername() + " as teacher");
+        if (!teacher.getUUID().equals(affinity.getTeacherID())) {
+            throw new IllegalStateException("lesson is not with " + teacher.getUsername() + " as teacher");
         }
-        if (!student.getUUID().equals(studentID)) {
-            throw new IllegalArgumentException("lesson is not with " + student.getUsername() + " as student");
+        if (!student.getUUID().equals(affinity.getStudentID())) {
+            throw new IllegalStateException("lesson is not with " + student.getUsername() + " as student");
         }
         if (teacher.getLesson(timeslot) == null) {
-            throw new IllegalArgumentException("no lesson with " + teacher.getUsername() + " at that time (" + timeslot + ")");
+            throw new IllegalStateException("no lesson with " + teacher.getUsername() + " at that time (" + timeslot + ")");
         }
         if (student.getLesson(timeslot) == null) {
-            throw new IllegalArgumentException("no lesson with " + student.getUsername() + " at that time (" + timeslot + ")");
+            throw new IllegalStateException("no lesson with " + student.getUsername() + " at that time (" + timeslot + ")");
         }
         student.deposit(teacher.getHourlyFee());
         teacher.withdraw(teacher.getHourlyFee());

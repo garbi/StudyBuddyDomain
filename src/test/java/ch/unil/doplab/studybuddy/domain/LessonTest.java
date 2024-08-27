@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.Random;
 import java.util.UUID;
 
+import static ch.unil.doplab.studybuddy.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LessonTest {
@@ -82,6 +83,7 @@ class LessonTest {
 
     @Test
     void testBookingSuccess() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
@@ -91,13 +93,13 @@ class LessonTest {
         lesson.book(albert, paul);
         assertEquals(lesson.getTeacherID(), albert.getUUID());
         assertEquals(lesson.getStudentID(), paul.getUUID());
-        assertEquals(topic.getTitle(), lesson.getTopic().getTitle());
-        assertTrue(lesson.getTopic().getLevels().contains(level));
-        assertEquals(1, lesson.getTopic().getLevels().size());
+        assertEquals(topic.getTitle(), lesson.getAffinity().getTitle());
+        assertTrue(lesson.getAffinity().getLevels().contains(level));
+        assertEquals(1, lesson.getAffinity().getLevels().size());
         assertSame(timeslot, lesson.getTimeslot());
 
         assertFalse(albert.getTimeslots().contains(timeslot));
-        assertNotSame(topic, lesson.getTopic());
+        assertNotSame(topic, lesson.getAffinity());
         assertNotNull(albert.getLesson(timeslot));
         assertNotNull(paul.getLesson(timeslot));
         assertSame(lesson, albert.getLesson(timeslot));
@@ -107,12 +109,13 @@ class LessonTest {
 
     @Test
     void testBookingFailure_WrongTopic() {
+        printMethodName();
         var topic = theology;
         var level = Level.Advanced;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "does not teach " + theology.getTitle();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -121,12 +124,13 @@ class LessonTest {
 
     @Test
     void testBookingFailure_WrongLevel() {
+        printMethodName();
         var topic = math;
         var level = Level.Beginner;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "does not teach " + math.getTitle();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -135,13 +139,14 @@ class LessonTest {
 
     @Test
     void testBookingFailure_NoCommunication() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeLanguage("English");
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "cannot communicate";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -150,12 +155,13 @@ class LessonTest {
 
     @Test
     void testBookingFailure_InsufficientFunds() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "has insufficient funds";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -164,6 +170,7 @@ class LessonTest {
 
     @Test
     void testBookingFailure_StudentAlreadyBooked() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
@@ -171,7 +178,7 @@ class LessonTest {
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(2 * albert.getHourlyFee());
         lesson.book(albert, paul);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "already has a lesson at this time";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -180,6 +187,7 @@ class LessonTest {
 
     @Test
     void testBookingFailure_TeacherNotAvailable() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
@@ -187,7 +195,7 @@ class LessonTest {
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeTimeslot(timeslot.toLocalDate(), timeslot.getHour());
         paul.deposit(albert.getHourlyFee());
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert,paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert,paul));
         String expectedMessage = "has no availability at this time";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -196,27 +204,29 @@ class LessonTest {
 
     @Test
     void testBookingFailure_NullTimeslotOrTopicOrLevel() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
+
         var lesson1 = new Lesson(null, topic, level);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson1.book(albert, paul));
-        String expectedMessage = "timeslot, topic or level cannot be null";
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson1.book(albert, paul));
+        String expectedMessage = "Timeslot, topic or level cannot be null";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
 
         var lesson2 = new Lesson(timeslot, null, level);
-        exception = assertThrows(IllegalArgumentException.class, () -> lesson2.book(albert, paul));
-        expectedMessage = "timeslot, topic or level cannot be null";
+        exception = assertThrows(IllegalStateException.class, () -> lesson2.book(albert, paul));
+        expectedMessage = "Timeslot, topic or level cannot be null";
         actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
 
         var lesson3 = new Lesson(timeslot, topic, null);
-        exception = assertThrows(IllegalArgumentException.class, () -> lesson3.book(albert, paul));
-        expectedMessage = "timeslot, topic or level cannot be null";
+        exception = assertThrows(IllegalStateException.class, () -> lesson3.book(albert, paul));
+        expectedMessage = "Timeslot, topic or level cannot be null";
         actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
@@ -224,14 +234,15 @@ class LessonTest {
 
     @Test
     void testBookingFailure_NoLevel() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         Level level = Level.Intermediate;
         var timeslot = albert.getTimeslots().first();
         var lesson = new Lesson(timeslot, topic, level);
-        lesson.getTopic().getLevels().clear();
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.book(albert, paul));
-        String expectedMessage = "there must be exactly one level in the lesson";
+        lesson.getAffinity().getLevels().clear();
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
+        String expectedMessage = "Timeslot, topic or level cannot be null";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
@@ -241,6 +252,7 @@ class LessonTest {
      * This method is used at the beginning of all cancel tests to first book a lesson successfully
      */
     private Lesson bookLessonSuccessfully() {
+        printMethodName();
         var topics = albert.getTopics();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
@@ -253,6 +265,7 @@ class LessonTest {
 
     @Test
     void testCancelSuccess() {
+        printMethodName();
         var lesson = bookLessonSuccessfully();
         lesson.cancel(albert, paul);
         assertNull(albert.getLesson(lesson.getTimeslot()));
@@ -262,6 +275,7 @@ class LessonTest {
 
     @Test
     void testCancelFailure_NullTeacherOrStudent() {
+        printMethodName();
         var lesson = bookLessonSuccessfully();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.cancel(null, paul));
@@ -279,8 +293,9 @@ class LessonTest {
 
     @Test
     void testCancelFailure_WrongTeacher() {
+        printMethodName();
         var lesson = bookLessonSuccessfully();
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.cancel(martin, paul));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.cancel(martin, paul));
         String expectedMessage = "lesson is not with " + martin.getUsername();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
@@ -288,9 +303,9 @@ class LessonTest {
     }
     @Test
     void testCancelFailure_WrongStudent() {
+        printMethodName();
         var lesson = bookLessonSuccessfully();
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.cancel(albert, jean));
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.cancel(albert, jean));
         String expectedMessage = "lesson is not with " + jean.getUsername();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
+import static ch.unil.doplab.studybuddy.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -30,6 +31,7 @@ class UserTest {
 
     @Test
     void testMerge() {
+        printMethodName();
         var uuid = UUID.randomUUID();
         var ironman = new User(uuid, "Tony", "Stark", "iron@starkcorp.com", "ironman");
         spiderman.setFirstName("Peter");
@@ -47,6 +49,7 @@ class UserTest {
 
     @Test
     void testUUID() {
+        printMethodName();
         UUID uuid = UUID.randomUUID();
         spiderman.setUUID(uuid);
         assertEquals(uuid, spiderman.getUUID());
@@ -54,6 +57,7 @@ class UserTest {
 
     @Test
     void testBalance() {
+        printMethodName();
         spiderman.setBalance(100);
         assertEquals(100, spiderman.getBalance());
 
@@ -63,7 +67,7 @@ class UserTest {
         spiderman.withdraw(75);
         assertEquals(75, spiderman.getBalance());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(IllegalStateException.class, () -> {
             spiderman.withdraw(100);
         });
         String expectedMessage = "Insufficient funds";
@@ -73,30 +77,35 @@ class UserTest {
 
     @Test
     void testFirstName() {
+        printMethodName();
         spiderman.setFirstName("Peter");
         assertEquals("Peter", spiderman.getFirstName());
     }
 
     @Test
     void testLastName() {
+        printMethodName();
         spiderman.setLastName("Parker");
         assertEquals("Parker", spiderman.getLastName());
     }
 
     @Test
     void testUsername() {
+        printMethodName();
         spiderman.setUsername("spiderman");
         assertEquals("spiderman", spiderman.getUsername());
     }
 
     @Test
     void testEmail() {
+        printMethodName();
         spiderman.setEmail("spidey@web.com");
         assertEquals("spidey@web.com", spiderman.getEmail());
     }
 
     @Test
     void testLanguages() {
+        printMethodName();
         spiderman.getLanguages();
         assertTrue(spiderman.getLanguages().isEmpty());
         spiderman.addLanguage("English");
