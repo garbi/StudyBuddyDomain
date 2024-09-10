@@ -1,14 +1,15 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import static ch.unil.doplab.studybuddy.domain.Utils.testMode;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.UUID;
 
 public class Lesson {
-
     private LocalDateTime timeslot;
     private Affinity affinity;
+    private Rating rating;
+    private Rating ratingUpdate;
 
     public Lesson() {
         this(null, null);
@@ -17,11 +18,39 @@ public class Lesson {
     public Lesson(LocalDateTime timeslot, Topic topic, Level level) {
         this.timeslot = timeslot;
         this.affinity = new Affinity(topic, level);
+        this.rating = Rating.NO_RATING;
+        this.ratingUpdate = rating;
     }
 
     public Lesson(LocalDateTime timeslot, Affinity affinity) {
         this.timeslot = timeslot;
         this.affinity = affinity;
+        this.rating = Rating.NO_RATING;
+        this.ratingUpdate = rating;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+//    public void setRating(Rating rating) {
+//        this.rating = rating;
+//    }
+
+    public void updateRating() {
+        this.rating = ratingUpdate;
+    }
+
+    public Rating getRatingUpdate() {
+        return ratingUpdate;
+    }
+
+    public void setRatingUpdate(Rating update) {
+        if (update != null) {
+            this.ratingUpdate = update;
+        } else {
+            this.ratingUpdate = Rating.NO_RATING;
+        }
     }
 
     public Affinity getAffinity() {
@@ -91,6 +120,10 @@ public class Lesson {
         if (timeslot == null || affinity == null || affinity.getTitle() == null || affinity.getLevel() == null) {
             throw new IllegalStateException("Timeslot, topic or level cannot be null");
         }
+        var timeMargin = LocalDateTime.now().plusDays(1);
+        if (!testMode() && timeslot.isBefore(timeMargin)) {
+            throw new IllegalStateException("Lessons must be booked at least one day in advance");
+        }
         if (!teacher.canCommunicateWith(student)) {
             throw new IllegalStateException(teacher.getFullName() + " and " + student.getFullName()  + " cannot communicate");
         }
@@ -117,24 +150,28 @@ public class Lesson {
 
     public void cancel(Teacher teacher, Student student) {
         if (teacher == null || student == null) {
-            throw new IllegalArgumentException("teacher or student cannot be null");
+            throw new IllegalArgumentException("Teacher or student cannot be null");
         }
         if (!teacher.getUUID().equals(affinity.getTeacherID())) {
-            throw new IllegalStateException("lesson is not with " + teacher.getUsername() + " as teacher");
+            throw new IllegalStateException("Lesson is not with " + teacher.getUsername() + " as teacher");
         }
         if (!student.getUUID().equals(affinity.getStudentID())) {
-            throw new IllegalStateException("lesson is not with " + student.getUsername() + " as student");
+            throw new IllegalStateException("Lesson is not with " + student.getUsername() + " as student");
         }
         if (teacher.getLesson(timeslot) == null) {
-            throw new IllegalStateException("no lesson with " + teacher.getUsername() + " at that time (" + timeslot + ")");
+            throw new IllegalStateException("No lesson with " + teacher.getUsername() + " at that time (" + timeslot + ")");
         }
         if (student.getLesson(timeslot) == null) {
-            throw new IllegalStateException("no lesson with " + student.getUsername() + " at that time (" + timeslot + ")");
+            throw new IllegalStateException("No lesson with " + student.getUsername() + " at that time (" + timeslot + ")");
         }
         student.deposit(teacher.getHourlyFee());
         teacher.withdraw(teacher.getHourlyFee());
         teacher.removeLesson(this);
         student.removeLesson(this);
         teacher.addTimeslot(timeslot);
+    }
+
+    public boolean isCompleted() {
+        return LocalDateTime.now().isAfter(timeslot);
     }
 }

@@ -8,9 +8,9 @@ import java.util.*;
 public class Teacher extends User {
 
     public static int defaultHourlyRate = 50;
-    public static int minRating = 0;
-    public static int maxRating = 5;
-    public static int noRating = -1;
+    public static int minRating = Rating.ONE_STAR.getValue();
+    public static int maxRating = Rating.FIVE_STARS.getValue();
+    public static int noRating =  Rating.NO_RATING.getValue();
 
     private int hourlyFee;
     private String description;
@@ -112,8 +112,33 @@ public class Teacher extends User {
 
     public void rate(int rating) {
         if (rating < minRating || rating > maxRating) {
-            throw new IllegalArgumentException("rating must be between " + minRating + " and " + maxRating);
+            throw new IllegalArgumentException("Rating must be between " + minRating + " and " + maxRating);
         }
         ratingAverage = (ratingAverage * ratingCount + rating) / ++ratingCount;
+    }
+
+    public void unrate(int rating) {
+        if (rating < minRating || rating > maxRating) {
+            throw new IllegalArgumentException("Rating must be between " + minRating + " and " + maxRating);
+        }
+        if (ratingCount > 1) {
+            ratingAverage = (ratingAverage * ratingCount - rating) / --ratingCount;
+        } else {
+            ratingAverage = noRating;
+            ratingCount = 0;
+        }
+    }
+
+    public Rating rateLesson(LocalDateTime timeslot, Rating rating) {
+        var oldRating = super.rateLesson(timeslot, rating);
+        if (rating != oldRating) {
+            if (oldRating != null && oldRating != Rating.NO_RATING) {
+                unrate(oldRating.getValue());
+            }
+            if (rating != Rating.NO_RATING) {
+                rate(rating.getValue());
+            }
+        }
+        return rating;
     }
 }

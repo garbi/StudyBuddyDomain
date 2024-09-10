@@ -114,7 +114,7 @@ public class Affinity extends Topic {
     }
 
     public String getFormattedTeacherRating() {
-        return teacherRating < 0 ? "not rated yet" : String.format("%.1f / %d", teacherRating, Teacher.maxRating);
+        return teacherRating <= 0 ? "not rated yet" : String.format("%.1f / %d", teacherRating, Teacher.maxRating);
     }
 
     public Level getLevel() {

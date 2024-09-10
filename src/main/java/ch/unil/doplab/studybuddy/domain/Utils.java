@@ -3,6 +3,20 @@ package ch.unil.doplab.studybuddy.domain;
 import java.lang.reflect.Constructor;
 
 public class Utils {
+    private static boolean testMode = false;
+
+    public static void testModeOn() {
+        testMode = true;
+    }
+
+    public static void testModeOff() {
+        testMode = false;
+    }
+
+    public static boolean testMode() {
+        return testMode;
+    }
+
     public static void printMethodName() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         var methodName = stackTraceElements[2].getMethodName();
@@ -25,7 +39,8 @@ public class Utils {
         try {
             Class<?> exceptionClass = Class.forName(description.getType());
             Constructor<?> constructor = exceptionClass.getConstructor(String.class);
-            return (Exception) constructor.newInstance(description.getMessage());
+            Exception exception = (Exception) constructor.newInstance(description.getMessage());
+            return exception;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

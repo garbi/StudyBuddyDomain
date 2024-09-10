@@ -13,7 +13,7 @@ public class User {
     private String email;
     private int balance;
     private Set<String> languages;
-    private Map<LocalDateTime,Lesson> lessons;
+    private Map<LocalDateTime, Lesson> lessons;
 
     public User() {
         this(null, null, null, null, null);
@@ -36,7 +36,7 @@ public class User {
 
     public void replaceWith(User user) {
         if (user == null) {
-            throw new IllegalArgumentException("user must not be null");
+            throw new IllegalArgumentException("User must not be null");
         }
         this.uuid = user.uuid;
         this.firstName = user.firstName;
@@ -44,13 +44,13 @@ public class User {
         this.email = user.email;
         this.username = user.username;
         this.balance = user.balance;
-        this.languages = user.languages ;
+        this.languages = user.languages;
         this.lessons = user.lessons;
     }
 
     public void mergeWith(User user) {
         if (user == null) {
-            throw new IllegalArgumentException("user must not be null");
+            throw new IllegalArgumentException("User must not be null");
         }
         if (user.uuid != null) {
             this.uuid = user.uuid;
@@ -193,30 +193,39 @@ public class User {
     }
 
     public boolean removeLesson(Lesson lesson) {
-        return lessons.remove(lesson.getTimeslot(), lesson);
+        return lessons.remove(lesson.getTimeslot()) != null;
     }
 
-//    public void setLanguages(List<String> languages) {
-//        this.languages = Set.copyOf(languages);
-//    }
+    public Rating rateLesson(LocalDateTime timeslot, Rating rating) {
+        if (timeslot == null) {
+            throw new IllegalArgumentException("Timeslot must not be null");
+        }
+        if (rating == null) {
+            throw new IllegalArgumentException("Rating must not be null");
+        }
+        var lesson = lessons.get(timeslot);
+        if (lesson == null) {
+            throw new IllegalStateException("No lesson found at " + timeslot);
+        }
+        var oldRating = lesson.getRating();
+        lesson.setRatingUpdate(rating);
+        ;
+        lesson.updateRating();
+        return oldRating;
+    }
 
     public void setLanguages(List<String> languages) {
         this.languages = new TreeSet<>(languages);
     }
 
-
     public List<Lesson> getLessons() {
-        return lessons.values().stream().toList();
+        var sortedLessons = lessons.values().stream()
+                .sorted(Comparator.comparing(Lesson::getTimeslot))
+                .toList(    );
+        return sortedLessons;
     }
 
     public void setLessons(List<Lesson> lessons) {
         this.lessons = lessons.stream().collect(Collectors.toMap(Lesson::getTimeslot, lesson -> lesson));
     }
-
-//    public Map<LocalDateTime, Lesson> getLessons() {
-//        return lessons;
-//    }
-//    public void setLessons(Map<LocalDateTime, Lesson> lessons) {
-//        this.lessons = lessons;
-//    }
 }

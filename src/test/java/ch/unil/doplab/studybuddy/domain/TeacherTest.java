@@ -48,12 +48,24 @@ class TeacherTest {
         assertEquals(Teacher.minRating, martin.getRatingAverage());
         System.out.println("martin is rated " + martin.getRatingAverage());
 
+        var previousRating = albert.getRatingAverage();
+
         albert.rate(Teacher.minRating);
         assertEquals((Teacher.minRating + Teacher.maxRating) / 2.0, albert.getRatingAverage());
         System.out.println("albert is rated " + albert.getRatingAverage());
 
+        albert.unrate(Teacher.minRating);
+        assertEquals(previousRating, albert.getRatingAverage());
+        System.out.println("albert is rated " + albert.getRatingAverage());
+
+        previousRating = martin.getRatingAverage();
+
         martin.rate(3);
         assertEquals((Teacher.minRating + 3) / 2.0, martin.getRatingAverage());
+        System.out.println("martin is rated " + martin.getRatingAverage());
+
+        martin.unrate(3);
+        assertEquals(previousRating, martin.getRatingAverage());
         System.out.println("martin is rated " + martin.getRatingAverage());
     }
 
@@ -63,13 +75,23 @@ class TeacherTest {
         System.out.println("albert is not rated yet (" + albert.getRatingAverage() + ")");
         assertEquals(Teacher.noRating, albert.getRatingAverage());
 
-        String expectedMessage = "rating must be between " + Teacher.minRating + " and " + Teacher.maxRating;
+        String expectedMessage = "Rating must be between " + Teacher.minRating + " and " + Teacher.maxRating;
         Exception exception = assertThrows(IllegalArgumentException.class, () -> albert.rate(Teacher.maxRating + 1));
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         assertEquals(Teacher.noRating, albert.getRatingAverage());
 
         exception = assertThrows(IllegalArgumentException.class, () -> albert.rate(Teacher.minRating - 1));
+        actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+        assertEquals(Teacher.noRating, albert.getRatingAverage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> albert.unrate(Teacher.maxRating + 1));
+        actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+        assertEquals(Teacher.noRating, albert.getRatingAverage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> albert.unrate(Teacher.minRating - 1));
         actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         assertEquals(Teacher.noRating, albert.getRatingAverage());

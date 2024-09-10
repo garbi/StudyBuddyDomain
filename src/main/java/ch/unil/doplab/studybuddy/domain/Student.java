@@ -39,7 +39,7 @@ public class Student extends User {
 
     public Set<Affinity> findAffinitiesWith(Teacher teacher) {
         if (teacher == null) {
-            throw new IllegalArgumentException("teacher must not be null");
+            throw new IllegalArgumentException("Teacher must not be null");
         }
         if (teacher.getTopics().isEmpty() || this.topics.isEmpty() || !canCommunicateWith(teacher)) {
             return Collections.emptySet();

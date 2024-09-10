@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.EnumSet;
 import java.util.Random;
@@ -25,6 +26,7 @@ class LessonTest {
 
     @BeforeEach
     void setUp() {
+        LocalDateTime timeslot;
         random = new Random();
         physics = new Topic(
                 "Physics",
@@ -49,9 +51,12 @@ class LessonTest {
         albert.addLanguage("German");
         albert.addLanguage("English");
         albert.setDescription("I am a theoretical physicist working at the Swiss Patent Office in Bern.");
-        albert.addTimeslot(LocalDate.now(), LocalTime.now().plusHours(1).getHour());
-        albert.addTimeslot(LocalDate.now(), LocalTime.now().plusHours(2).getHour());
-        albert.addTimeslot(LocalDate.now().plusDays(1), LocalTime.now().getHour());
+        timeslot = LocalDateTime.now().plusDays(1).plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        albert.addTimeslot(timeslot);
+        timeslot = LocalDateTime.now().plusDays(1).plusHours(2).withMinute(0).withSecond(0).withNano(0);
+        albert.addTimeslot(timeslot);
+        timeslot = LocalDateTime.now().plusDays(1).plusHours(3).withMinute(0).withSecond(0).withNano(0);
+        albert.addTimeslot(timeslot);
         albert.addTopic(physics);
         albert.addTopic(math);
 
@@ -63,7 +68,8 @@ class LessonTest {
         martin.addTopic(theology);
         martin.addLanguage("German");
         martin.setDescription("I am a German professor of theology and a seminal figure in the Protestant Reformation.");
-        martin.addTimeslot(LocalDate.now(), LocalTime.now().plusHours(1).getHour());
+        timeslot = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        martin.addTimeslot(timeslot);
 
         paul = new Student(UUID.randomUUID(),
                 "Paul",
@@ -248,6 +254,23 @@ class LessonTest {
         System.out.println(actualMessage);
     }
 
+    @Test
+    void testBookingFailure_TimeslotInThePast() {
+        printMethodName();
+        var topics = albert.getTopics();
+        var topic = topics.get(random.nextInt(topics.size()));
+        var level = Level.Advanced;
+        var timeslot = albert.getTimeslots().first();
+        var lesson = new Lesson(timeslot, topic, level);
+        lesson.setTimeslot(LocalDateTime.now().minusDays(1));
+        paul.deposit(albert.getHourlyFee());
+        Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
+        String expectedMessage = "Lessons must be booked at least one day in advance";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+        System.out.println(actualMessage);
+    }
+
     /*
      * This method is used at the beginning of all cancel tests to first book a lesson successfully
      */
@@ -279,13 +302,13 @@ class LessonTest {
         var lesson = bookLessonSuccessfully();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> lesson.cancel(null, paul));
-        String expectedMessage = "teacher or student cannot be null";
+        String expectedMessage = "Teacher or student cannot be null";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
 
         exception = assertThrows(IllegalArgumentException.class, () -> lesson.cancel(albert, null));
-        expectedMessage = "teacher or student cannot be null";
+        expectedMessage = "Teacher or student cannot be null";
         actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
@@ -296,7 +319,7 @@ class LessonTest {
         printMethodName();
         var lesson = bookLessonSuccessfully();
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.cancel(martin, paul));
-        String expectedMessage = "lesson is not with " + martin.getUsername();
+        String expectedMessage = "Lesson is not with " + martin.getUsername();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
@@ -306,7 +329,7 @@ class LessonTest {
         printMethodName();
         var lesson = bookLessonSuccessfully();
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.cancel(albert, jean));
-        String expectedMessage = "lesson is not with " + jean.getUsername();
+        String expectedMessage = "Lesson is not with " + jean.getUsername();
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
         System.out.println(actualMessage);
