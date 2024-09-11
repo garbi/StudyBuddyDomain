@@ -14,8 +14,8 @@ public class Teacher extends User {
 
     private int hourlyFee;
     private String description;
-    private final SortedSet<LocalDateTime> timeslots;
-    private final Map<String,Topic> topics;
+    private SortedSet<LocalDateTime> timeslots;
+    private Map<String,Topic> topics;
     private double ratingAverage;
     private long ratingCount;
 
@@ -59,14 +59,22 @@ public class Teacher extends User {
         this.description = description;
     }
 
-    public SortedSet<LocalDateTime> getTimeslots() {
-        return timeslots;
+    public List<LocalDateTime> getTimeslots() {
+        return new ArrayList<>(timeslots);
+    }
+
+    public void setTimeslots(List<LocalDateTime> timeslots) {
+        this.timeslots.clear();
+        this.timeslots.addAll(timeslots);
     }
 
     public void addTimeslot(LocalDate date, int hour) {
         timeslots.add(LocalDateTime.of(date, LocalTime.of(hour, 0)));
     }
 
+    public LocalDateTime firstAvailableTimeslot() {
+        return timeslots.first();
+    }
     public void addTimeslot(LocalDateTime timeslot) {
         timeslots.add(timeslot);
     }
@@ -95,8 +103,16 @@ public class Teacher extends User {
         return topics.get(title);
     }
 
-    public List<Topic> getTopics() {
+    List<Topic> getTopicList() {
         return topics.values().stream().toList();
+    }
+
+    public Map<String,Topic> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(Map<String,Topic> topics) {
+        this.topics = topics;
     }
 
     public boolean teaches(Topic topic) {
@@ -141,4 +157,15 @@ public class Teacher extends User {
         }
         return rating;
     }
+
+    public void replaceWith(Teacher teacher) {
+        super.replaceWith(teacher);
+        this.hourlyFee = teacher.hourlyFee;
+        this.description = teacher.description;
+        this.timeslots = teacher.timeslots;
+        this.topics = teacher.topics;
+        this.ratingAverage = teacher.ratingAverage;
+        this.ratingCount = teacher.ratingCount;
+    }
+
 }

@@ -53,7 +53,7 @@ class StudentTest {
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(1, matches.size());
         assertTrue(matches.contains(math));
-        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(albert.getUsername(), albert.getTopicList());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
     }
@@ -64,7 +64,7 @@ class StudentTest {
         paul.addLanguage("English");
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(albert.getUsername(), albert.getTopicList());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
     }
@@ -75,7 +75,7 @@ class StudentTest {
         paul.addInterest(new Topic("Math", null, Level.Intermediate));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(albert.getUsername(), albert.getTopicList());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
     }
@@ -87,7 +87,7 @@ class StudentTest {
         paul.addInterest(new Topic("Biology", null, Level.Intermediate));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(albert.getUsername(), albert.getTopicList());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
     }
@@ -98,7 +98,7 @@ class StudentTest {
         paul.addInterest(new Topic("Math", null, Level.Beginner));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopics());
+        printTopics(albert.getUsername(), albert.getTopicList());
         printTopics(paul.getUsername(), paul.getTopics());
         printTopics("matches", matches);
     }

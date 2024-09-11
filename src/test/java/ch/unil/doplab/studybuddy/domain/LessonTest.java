@@ -3,9 +3,7 @@ package ch.unil.doplab.studybuddy.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.UUID;
@@ -90,10 +88,10 @@ class LessonTest {
     @Test
     void testBookingSuccess() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
         lesson.book(albert, paul);
@@ -118,7 +116,7 @@ class LessonTest {
         printMethodName();
         var topic = theology;
         var level = Level.Advanced;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
@@ -133,7 +131,7 @@ class LessonTest {
         printMethodName();
         var topic = math;
         var level = Level.Beginner;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
@@ -146,10 +144,10 @@ class LessonTest {
     @Test
     void testBookingFailure_NoCommunication() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeLanguage("English");
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
@@ -162,10 +160,10 @@ class LessonTest {
     @Test
     void testBookingFailure_InsufficientFunds() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "has insufficient funds";
@@ -177,10 +175,10 @@ class LessonTest {
     @Test
     void testBookingFailure_StudentAlreadyBooked() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(2 * albert.getHourlyFee());
         lesson.book(albert, paul);
@@ -194,10 +192,10 @@ class LessonTest {
     @Test
     void testBookingFailure_TeacherNotAvailable() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         albert.removeTimeslot(timeslot.toLocalDate(), timeslot.getHour());
         paul.deposit(albert.getHourlyFee());
@@ -211,10 +209,10 @@ class LessonTest {
     @Test
     void testBookingFailure_NullTimeslotOrTopicOrLevel() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
 
         var lesson1 = new Lesson(null, topic, level);
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson1.book(albert, paul));
@@ -241,10 +239,10 @@ class LessonTest {
     @Test
     void testBookingFailure_NoLevel() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         Level level = Level.Intermediate;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         lesson.getAffinity().getLevels().clear();
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
@@ -257,10 +255,10 @@ class LessonTest {
     @Test
     void testBookingFailure_TimeslotInThePast() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         lesson.setTimeslot(LocalDateTime.now().minusDays(1));
         paul.deposit(albert.getHourlyFee());
@@ -276,10 +274,10 @@ class LessonTest {
      */
     private Lesson bookLessonSuccessfully() {
         printMethodName();
-        var topics = albert.getTopics();
+        var topics = albert.getTopicList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
-        var timeslot = albert.getTimeslots().first();
+        var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
         paul.deposit(albert.getHourlyFee());
         lesson.book(albert, paul);
