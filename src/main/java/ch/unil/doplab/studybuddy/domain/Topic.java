@@ -1,11 +1,7 @@
 package ch.unil.doplab.studybuddy.domain;
 
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Topic  implements Comparable<Topic> {
 
