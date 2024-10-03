@@ -1,6 +1,5 @@
 package ch.unil.doplab.studybuddy.domain;
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class Affinity extends Topic {
@@ -30,7 +29,7 @@ public class Affinity extends Topic {
                 teacher.getUUID(),
                 teacher.getFullName(),
                 teacher.getEmail(),
-                teacher.getDescription(),
+                teacher.getBiography(),
                 teacher.getHourlyFee(),
                 teacher.getRatingAverage()
         );
@@ -52,7 +51,7 @@ public class Affinity extends Topic {
         this.teacherID = teacher.getUUID();
         this.teacherName = teacher.getFullName();
         this.teacherEmail = teacher.getEmail();
-        this.teacherDescription = teacher.getDescription();
+        this.teacherDescription = teacher.getBiography();
         this.teacherHourlyRate = teacher.getHourlyFee();
         this.teacherRating = teacher.getRatingAverage();
     }
@@ -114,7 +113,7 @@ public class Affinity extends Topic {
     }
 
     public String getFormattedTeacherRating() {
-        return teacherRating <= 0 ? "not rated yet" : String.format("%.1f / %d", teacherRating, Teacher.maxRating);
+        return Utils.formatTeacherRating(teacherRating);
     }
 
     public Level getLevel() {

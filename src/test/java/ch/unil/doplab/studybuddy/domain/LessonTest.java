@@ -48,7 +48,7 @@ class LessonTest {
                 "albert");
         albert.addLanguage("German");
         albert.addLanguage("English");
-        albert.setDescription("I am a theoretical physicist working at the Swiss Patent Office in Bern.");
+        albert.setBiography("I am a theoretical physicist working at the Swiss Patent Office in Bern.");
         timeslot = LocalDateTime.now().plusDays(1).plusHours(1).withMinute(0).withSecond(0).withNano(0);
         albert.addTimeslot(timeslot);
         timeslot = LocalDateTime.now().plusDays(1).plusHours(2).withMinute(0).withSecond(0).withNano(0);
@@ -65,7 +65,7 @@ class LessonTest {
                 "martin");
         martin.addTopic(theology);
         martin.addLanguage("German");
-        martin.setDescription("I am a German professor of theology and a seminal figure in the Protestant Reformation.");
+        martin.setBiography("I am a German professor of theology and a seminal figure in the Protestant Reformation.");
         timeslot = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0);
         martin.addTimeslot(timeslot);
 

@@ -13,7 +13,7 @@ public class Teacher extends User {
     public static int noRating =  Rating.NO_RATING.getValue();
 
     private int hourlyFee;
-    private String description;
+    private String biography;
     private SortedSet<LocalDateTime> timeslots;
     private Map<String,Topic> topics;
     private double ratingAverage;
@@ -40,7 +40,7 @@ public class Teacher extends User {
 
     public String describe() {
         return super.describe() + ", hourlyRate=" + hourlyFee + " CHF/h, rating=" + (ratingAverage >= 0 ? ratingAverage : "none") +
-                ", description='" + description + "', timeslots=" + timeslots + "', topics=" + topics;
+                ", description='" + biography + "', timeslots=" + timeslots + "', topics=" + topics;
     }
 
     public int getHourlyFee() {
@@ -51,12 +51,12 @@ public class Teacher extends User {
         this.hourlyFee = hourlyFee;
     }
 
-    public String getDescription() {
-        return description;
+    public String getBiography() {
+        return biography;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
 
     public List<LocalDateTime> getTimeslots() {
@@ -126,6 +126,10 @@ public class Teacher extends User {
         return ratingAverage;
     }
 
+    public void setRatingAverage(double ratingAverage) {
+        this.ratingAverage = ratingAverage;
+    }
+
     public void rate(int rating) {
         if (rating < minRating || rating > maxRating) {
             throw new IllegalArgumentException("Rating must be between " + minRating + " and " + maxRating);
@@ -161,7 +165,7 @@ public class Teacher extends User {
     public void replaceWith(Teacher teacher) {
         super.replaceWith(teacher);
         this.hourlyFee = teacher.hourlyFee;
-        this.description = teacher.description;
+        this.biography = teacher.biography;
         this.timeslots = teacher.timeslots;
         this.topics = teacher.topics;
         this.ratingAverage = teacher.ratingAverage;

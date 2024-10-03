@@ -45,4 +45,8 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static String formatTeacherRating(double teacherRating) {
+        return teacherRating <= 0 ? "not rated yet" : String.format("%.1f / %d", teacherRating, Teacher.maxRating);
+    }
 }
