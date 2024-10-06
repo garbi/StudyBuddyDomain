@@ -18,6 +18,18 @@ public enum Rating {
         return value;
     }
 
+    public static Rating fromValue(int value) {
+        return switch (value) {
+            case 0 -> NO_RATING;
+            case 1 -> ONE_STAR;
+            case 2 -> TWO_STARS;
+            case 3 -> THREE_STARS;
+            case 4 -> FOUR_STARS;
+            case 5 -> FIVE_STARS;
+            default -> throw new IllegalArgumentException("Invalid rating value: " + value);
+        };
+    }
+
     public String getLabel() {
         return switch (value) {
             case 0 -> "No rating";

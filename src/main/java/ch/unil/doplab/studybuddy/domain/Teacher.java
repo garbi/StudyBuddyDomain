@@ -15,7 +15,7 @@ public class Teacher extends User {
     private int hourlyFee;
     private String biography;
     private SortedSet<LocalDateTime> timeslots;
-    private Map<String,Topic> topics;
+    private Map<String,Topic> courses;
     private double ratingAverage;
     private long ratingCount;
 
@@ -33,14 +33,14 @@ public class Teacher extends User {
         super(id, firstName, lastName, email, username);
         this.hourlyFee = hourlyRate;
         timeslots = new TreeSet<>();
-        topics = new TreeMap<>();
+        courses = new TreeMap<>();
         ratingAverage = noRating;
         ratingCount = 0;
     }
 
     public String describe() {
         return super.describe() + ", hourlyRate=" + hourlyFee + " CHF/h, rating=" + (ratingAverage >= 0 ? ratingAverage : "none") +
-                ", description='" + biography + "', timeslots=" + timeslots + "', topics=" + topics;
+                ", description='" + biography + "', timeslots=" + timeslots + "', courses=" + courses;
     }
 
     public int getHourlyFee() {
@@ -91,35 +91,35 @@ public class Teacher extends User {
         return timeslots.contains(timeslot);
     }
 
-    public void addTopic(Topic topic) {
-        topics.put(topic.getTitle(), topic);
+    public void addCourse(Topic course) {
+        courses.put(course.getTitle(), course);
     }
 
-    public void removeTopic(String title) {
-        topics.remove(title);
+    public void removeCourse(String title) {
+        courses.remove(title);
     }
 
-    public Topic getTopic(String title) {
-        return topics.get(title);
+    public Topic getCourse(String title) {
+        return courses.get(title);
     }
 
-    List<Topic> getTopicList() {
-        return topics.values().stream().toList();
+    public List<Topic> getCourseList() {
+        return courses.values().stream().toList();
     }
 
-    public Map<String,Topic> getTopics() {
-        return topics;
+    public Map<String,Topic> getCourses() {
+        return courses;
     }
 
-    public void setTopics(Map<String,Topic> topics) {
-        this.topics = topics;
+    public void setCourses(Map<String,Topic> courses) {
+        this.courses = courses;
     }
 
-    public boolean teaches(Topic topic) {
-        if (!topics.containsKey(topic.getTitle())) {
+    public boolean teaches(Topic course) {
+        if (!courses.containsKey(course.getTitle())) {
             return false;
         }
-        return topics.get(topic.getTitle()).getLevels().containsAll(topic.getLevels());
+        return courses.get(course.getTitle()).getLevels().containsAll(course.getLevels());
     }
 
     public double getRatingAverage() {
@@ -167,7 +167,7 @@ public class Teacher extends User {
         this.hourlyFee = teacher.hourlyFee;
         this.biography = teacher.biography;
         this.timeslots = teacher.timeslots;
-        this.topics = teacher.topics;
+        this.courses = teacher.courses;
         this.ratingAverage = teacher.ratingAverage;
         this.ratingCount = teacher.ratingCount;
     }

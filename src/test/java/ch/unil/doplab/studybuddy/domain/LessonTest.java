@@ -55,15 +55,15 @@ class LessonTest {
         albert.addTimeslot(timeslot);
         timeslot = LocalDateTime.now().plusDays(1).plusHours(3).withMinute(0).withSecond(0).withNano(0);
         albert.addTimeslot(timeslot);
-        albert.addTopic(physics);
-        albert.addTopic(math);
+        albert.addCourse(physics);
+        albert.addCourse(math);
 
         martin = new Teacher(UUID.randomUUID(),
                 "Martin",
                 "Luther",
                 "luther@king.com",
                 "martin");
-        martin.addTopic(theology);
+        martin.addCourse(theology);
         martin.addLanguage("German");
         martin.setBiography("I am a German professor of theology and a seminal figure in the Protestant Reformation.");
         timeslot = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0);
@@ -88,7 +88,7 @@ class LessonTest {
     @Test
     void testBookingSuccess() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
         var timeslot = albert.firstAvailableTimeslot();
@@ -144,7 +144,7 @@ class LessonTest {
     @Test
     void testBookingFailure_NoCommunication() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -160,7 +160,7 @@ class LessonTest {
     @Test
     void testBookingFailure_InsufficientFunds() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -175,7 +175,7 @@ class LessonTest {
     @Test
     void testBookingFailure_StudentAlreadyBooked() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -192,7 +192,7 @@ class LessonTest {
     @Test
     void testBookingFailure_TeacherNotAvailable() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -209,7 +209,7 @@ class LessonTest {
     @Test
     void testBookingFailure_NullTimeslotOrTopicOrLevel() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -239,7 +239,7 @@ class LessonTest {
     @Test
     void testBookingFailure_NoLevel() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         Level level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
@@ -255,7 +255,7 @@ class LessonTest {
     @Test
     void testBookingFailure_TimeslotInThePast() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
         var timeslot = albert.firstAvailableTimeslot();
@@ -274,7 +274,7 @@ class LessonTest {
      */
     private Lesson bookLessonSuccessfully() {
         printMethodName();
-        var topics = albert.getTopicList();
+        var topics = albert.getCourseList();
         var topic = topics.get(random.nextInt(topics.size()));
         var level = Level.Advanced;
         var timeslot = albert.firstAvailableTimeslot();

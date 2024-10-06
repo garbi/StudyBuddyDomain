@@ -34,8 +34,8 @@ class StudentTest {
                 "The study of numbers, quantity, structure, space, and change.",
                 EnumSet.of(Level.Intermediate, Level.Advanced));
 
-        albert.addTopic(physics);
-        albert.addTopic(math);
+        albert.addCourse(physics);
+        albert.addCourse(math);
         albert.addLanguage("English");
 
         paul = new Student(UUID.randomUUID(),
@@ -53,8 +53,8 @@ class StudentTest {
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(1, matches.size());
         assertTrue(matches.contains(math));
-        printTopics(albert.getUsername(), albert.getTopicList());
-        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics(albert.getUsername(), albert.getCourseList());
+        printTopics(paul.getUsername(), paul.getInterests());
         printTopics("matches", matches);
     }
 
@@ -64,8 +64,8 @@ class StudentTest {
         paul.addLanguage("English");
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopicList());
-        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics(albert.getUsername(), albert.getCourseList());
+        printTopics(paul.getUsername(), paul.getInterests());
         printTopics("matches", matches);
     }
 
@@ -75,8 +75,8 @@ class StudentTest {
         paul.addInterest(new Topic("Math", null, Level.Intermediate));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopicList());
-        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics(albert.getUsername(), albert.getCourseList());
+        printTopics(paul.getUsername(), paul.getInterests());
         printTopics("matches", matches);
     }
 
@@ -87,8 +87,8 @@ class StudentTest {
         paul.addInterest(new Topic("Biology", null, Level.Intermediate));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopicList());
-        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics(albert.getUsername(), albert.getCourseList());
+        printTopics(paul.getUsername(), paul.getInterests());
         printTopics("matches", matches);
     }
 
@@ -98,8 +98,8 @@ class StudentTest {
         paul.addInterest(new Topic("Math", null, Level.Beginner));
         var matches = paul.findAffinitiesWith(albert);
         assertEquals(0, matches.size());
-        printTopics(albert.getUsername(), albert.getTopicList());
-        printTopics(paul.getUsername(), paul.getTopics());
+        printTopics(albert.getUsername(), albert.getCourseList());
+        printTopics(paul.getUsername(), paul.getInterests());
         printTopics("matches", matches);
     }
 

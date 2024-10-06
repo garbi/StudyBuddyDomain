@@ -1,6 +1,7 @@
 package ch.unil.doplab.studybuddy.domain;
 
 import static ch.unil.doplab.studybuddy.domain.Utils.testMode;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -33,9 +34,9 @@ public class Lesson {
         return rating;
     }
 
-//    public void setRating(Rating rating) {
-//        this.rating = rating;
-//    }
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
 
     public void updateRating() {
         this.rating = ratingUpdate;
@@ -93,6 +94,22 @@ public class Lesson {
         return affinity.getStudentID();
     }
 
+    public String getStudentName() {
+        return affinity.getStudentName();
+    }
+
+    public void setStudentName(String studentName) {
+        affinity.setStudentName(studentName);
+    }
+
+    public String getStudentEmail() {
+        return affinity.getStudentEmail();
+    }
+
+    public void setStudentEmail(String studentEmail) {
+        affinity.setStudentEmail(studentEmail);
+    }
+
     public void setTeacherID(UUID teacherID) {
         affinity.setTeacherID(teacherID);
     }
@@ -103,6 +120,14 @@ public class Lesson {
 
     public void setTeacherName(String teacherName) {
         affinity.setTeacherName(teacherName);
+    }
+
+    public String getTeacherEmail() {
+        return affinity.getTeacherEmail();
+    }
+
+    public void setTeacherEmail(String teacherEmail) {
+        affinity.setTeacherEmail(teacherEmail);
     }
 
     @Override
@@ -125,7 +150,7 @@ public class Lesson {
             throw new IllegalStateException("Lessons must be booked at least one day in advance");
         }
         if (!teacher.canCommunicateWith(student)) {
-            throw new IllegalStateException(teacher.getFullName() + " and " + student.getFullName()  + " cannot communicate");
+            throw new IllegalStateException(teacher.getFullName() + " and " + student.getFullName() + " cannot communicate");
         }
         if (student.getBalance() < teacher.getHourlyFee()) {
             throw new IllegalStateException("Student " + student.getFullName() + " has insufficient funds");
@@ -136,7 +161,7 @@ public class Lesson {
         if (!teacher.isAvailable(timeslot)) {
             throw new IllegalStateException("Teacher " + teacher.getFullName() + " has no availability at this time");
         }
-        if(!teacher.teaches(affinity)) {
+        if (!teacher.teaches(affinity)) {
             throw new IllegalStateException("Teacher " + teacher.getFullName() + " does not teach " + affinity.getTitle() + " at " + affinity.getLevel());
         }
         affinity.setStudent(student);
@@ -173,5 +198,9 @@ public class Lesson {
 
     public boolean isCompleted() {
         return LocalDateTime.now().isAfter(timeslot);
+    }
+
+    public String getTopic() {
+        return affinity.getTitle();
     }
 }

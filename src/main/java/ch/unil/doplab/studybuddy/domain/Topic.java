@@ -55,6 +55,16 @@ public class Topic  implements Comparable<Topic> {
         this.levels = levels;
     }
 
+    public String listLevels() {
+        var levels = this.levels.toString();
+        if (levels.length() > 2) {
+            levels = levels.substring(1, levels.length() - 1);
+        } else {
+            levels = "";
+        }
+        return levels;
+    }
+
     @Override
     public String toString() {
         return "Topic{" +
