@@ -18,7 +18,7 @@ class UserTest {
 
     @Test
     void testReplace() {
-        var ironman = new User(UUID.randomUUID(), "Tony", "Stark", "iron@starkcorp.com", "ironman");
+        var ironman = new User(UUID.randomUUID(), "Tony", "Stark", "iron@starkcorp.com", "ironman", "1234");
         ironman.setBalance(1000);
         ironman.addLanguage("English");
         spiderman.setFirstName("Peter");
@@ -33,7 +33,7 @@ class UserTest {
     void testMerge() {
         printMethodName();
         var uuid = UUID.randomUUID();
-        var ironman = new User(uuid, "Tony", "Stark", "iron@starkcorp.com", "ironman");
+        var ironman = new User(uuid, "Tony", "Stark", "iron@starkcorp.com", "ironman", "1234");
         spiderman.setFirstName("Peter");
         spiderman.setUsername("spiderman");
         spiderman.addLanguage("English");

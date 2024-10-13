@@ -45,7 +45,8 @@ class LessonTest {
                 "Albert",
                 "Einstein",
                 "einstein@emc2.org",
-                "albert");
+                "albert",
+                "1234");
         albert.addLanguage("German");
         albert.addLanguage("English");
         albert.setBiography("I am a theoretical physicist working at the Swiss Patent Office in Bern.");
@@ -62,7 +63,8 @@ class LessonTest {
                 "Martin",
                 "Luther",
                 "luther@king.com",
-                "martin");
+                "martin",
+                "1234");
         martin.addCourse(theology);
         martin.addLanguage("German");
         martin.setBiography("I am a German professor of theology and a seminal figure in the Protestant Reformation.");
@@ -73,7 +75,8 @@ class LessonTest {
                 "Paul",
                 "Dirac",
                 "dirac@quantum.org",
-                "paul");
+                "paul",
+                "1234");
         paul.addLanguage("French");
         paul.addLanguage("English");
 
@@ -81,7 +84,8 @@ class LessonTest {
                 "Jean",
                 "Calvin",
                 "calvin@geneva.org",
-                "jean");
+                "jean",
+                "1234");
         jean.addLanguage("French");
     }
 

@@ -10,6 +10,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String username;
+    private String password;
     private String email;
     private int balance;
     private Set<String> languages;
@@ -19,16 +20,17 @@ public class User {
         this(null, null, null, null, null);
     }
 
-    public User(String firstName, String lastName, String email, String username) {
-        this(null, firstName, lastName, email, username);
+    public User(String firstName, String lastName, String email, String username, String password) {
+        this(null, firstName, lastName, email, username, password);
     }
 
-    public User(UUID uuid, String firstName, String lastName, String email, String username) {
+    public User(UUID uuid, String firstName, String lastName, String email, String username, String password) {
         this.uuid = uuid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
+        this.password = password;
         this.balance = 0;
         this.languages = new TreeSet<>();
         lessons = new TreeMap<>();
@@ -43,6 +45,7 @@ public class User {
         this.lastName = user.lastName;
         this.email = user.email;
         this.username = user.username;
+        this.password = user.password;
         this.balance = user.balance;
         this.languages = user.languages;
         this.lessons = user.lessons;
@@ -66,6 +69,9 @@ public class User {
         }
         if (user.username != null) {
             this.username = user.username;
+        }
+        if (user.password != null) {
+            this.password = user.password;
         }
         if (!user.languages.isEmpty()) {
             this.languages.addAll(user.languages);
@@ -107,12 +113,20 @@ public class User {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setEmail(String email) {

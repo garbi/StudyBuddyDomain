@@ -22,7 +22,8 @@ class StudentTest {
                 "Albert",
                 "Einstein",
                 "einstein@emc2.org",
-                "albert");
+                "albert",
+                "1234");
 
         physics = new Topic(
                 "Physics",
@@ -42,7 +43,8 @@ class StudentTest {
                 "Paul",
                 "Dirac",
                     "paul@quantum.org",
-                "paul");
+                "paul",
+                "1234");
     }
 
     @Test

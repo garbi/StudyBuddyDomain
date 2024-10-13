@@ -1,6 +1,7 @@
 package ch.unil.doplab.studybuddy.domain;
 
 import java.lang.reflect.Constructor;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class Utils {
     private static boolean testMode = false;
@@ -48,5 +49,13 @@ public class Utils {
 
     public static String formatTeacherRating(double teacherRating) {
         return teacherRating <= 0 ? "not rated yet" : String.format("%.1f / %d", teacherRating, Teacher.maxRating);
+    }
+
+    public static String hashPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+    }
+
+    public static boolean checkPassword(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
     }
 }

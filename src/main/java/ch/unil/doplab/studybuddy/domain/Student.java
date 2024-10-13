@@ -12,12 +12,12 @@ public class Student extends User {
         interests = new TreeSet<>();
     }
 
-    public Student(String firstName, String lastName, String email, String username) {
-        this(null, firstName, lastName, email, username);
+    public Student(String firstName, String lastName, String email, String username, String password) {
+        this(null, firstName, lastName, email, username, password);
     }
 
-    public Student(UUID id, String firstName, String lastName, String email, String username) {
-        super(id, firstName, lastName, email, username);
+    public Student(UUID id, String firstName, String lastName, String email, String username, String password) {
+        super(id, firstName, lastName, email, username, password);
         interests = new TreeSet<>();
     }
 

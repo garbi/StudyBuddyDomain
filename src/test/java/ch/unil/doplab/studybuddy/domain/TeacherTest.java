@@ -24,13 +24,15 @@ class TeacherTest {
                 "Albert",
                 "Einstein",
                 "einstein@emc2.org",
-                "albert");
+                "albert",
+                "1234");
 
         martin = new Teacher(UUID.randomUUID(),
                 "Martin",
                 "Luther",
                 "luther@king.com",
-                "martin");
+                "martin",
+                "1234");
     }
 
     @Test
