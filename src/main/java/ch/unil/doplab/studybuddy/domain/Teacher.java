@@ -20,17 +20,33 @@ public class Teacher extends User {
     private long ratingCount;
 
     public Teacher() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
+    }
+
+    public Teacher(String firstName, String lastName, String email, String username, String password, String biography) {
+        this(null, firstName, lastName, email, username, password, biography);
     }
 
     public Teacher(String firstName, String lastName, String email, String username, String password) {
-        this(null, firstName, lastName, email, username, password);
+        this(firstName, lastName, email, username, password, null);
     }
+
+
+    public Teacher(String firstName, String lastName, String email, String username, String password, String biography, int hourlyRate) {
+        this(null, firstName, lastName, email, username, password, biography, hourlyRate);
+    }
+
     public Teacher(UUID id, String firstName, String lastName, String email, String username, String password) {
-        this(id, firstName, lastName, email, username, password, defaultHourlyRate);
+        this(id, firstName, lastName, email, username, password, null);
     }
-    public Teacher(UUID id, String firstName, String lastName, String email, String username, String password, int hourlyRate) {
+
+    public Teacher(UUID id, String firstName, String lastName, String email, String username, String password, String biography) {
+        this(id, firstName, lastName, email, username, password, biography, defaultHourlyRate);
+    }
+
+    public Teacher(UUID id, String firstName, String lastName, String email, String username, String password, String biography, int hourlyRate) {
         super(id, firstName, lastName, email, username, password);
+        this.biography = biography;
         this.hourlyFee = hourlyRate;
         timeslots = new TreeSet<>();
         courses = new TreeMap<>();

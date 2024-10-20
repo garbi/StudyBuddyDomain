@@ -4,6 +4,9 @@ import java.lang.reflect.Constructor;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Utils {
+    public static final String studentRole = "student";
+    public static final String teacherRole = "teacher";
+
     private static boolean testMode = false;
 
     public static void testModeOn() {
