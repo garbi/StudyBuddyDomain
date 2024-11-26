@@ -1,10 +1,23 @@
 package ch.unil.doplab.studybuddy.domain;
+import jakarta.persistence.*;
+
 import java.util.EnumSet;
 import java.util.UUID;
 
+@Entity
 public class Affinity extends Topic {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", updatable = false, nullable = false)
+    private Long id;
+
+    @Column(name = "STUDENT")
     private UUID studentID;
+
+    @Column(name = "TEACHER")
     private UUID teacherID;
+
     private String studentName;
     private String studentEmail;
     private String teacherName;

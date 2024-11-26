@@ -1,20 +1,34 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@MappedSuperclass
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "UUID", updatable = false, nullable = false)
     private UUID uuid;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "LANGUAGE", joinColumns = @JoinColumn(name = "USER"))
+    @Column(name = "LANGUAGE")
+    private Set<String> languages;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @MapKey(name = "timeslot")
+    @JoinColumn(name = "user")
+    private Map<LocalDateTime, Lesson> lessons;
+
     private String firstName;
     private String lastName;
     private String username;
     private String password;
     private String email;
     private int balance;
-    private Set<String> languages;
-    private Map<LocalDateTime, Lesson> lessons;
 
     public User() {
         this(null, null, null, null, null);

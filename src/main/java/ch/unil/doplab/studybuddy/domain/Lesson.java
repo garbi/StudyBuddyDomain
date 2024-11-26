@@ -1,15 +1,32 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import jakarta.persistence.*;
+
 import static ch.unil.doplab.studybuddy.domain.Utils.testMode;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
 public class Lesson {
-    private LocalDateTime timeslot;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", updatable = false, nullable = false)
+    private Long id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "AFFINITY")
     private Affinity affinity;
+
+    @Column(name = "TIMESLOT")
+    private LocalDateTime timeslot;
+
+    @Enumerated(EnumType.STRING)
     private Rating rating;
+
+    @Enumerated(EnumType.STRING)
     private Rating ratingUpdate;
 
     public Lesson() {

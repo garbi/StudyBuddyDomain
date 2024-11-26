@@ -1,13 +1,24 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import jakarta.persistence.*;
 import java.util.EnumSet;
 import java.util.Objects;
 
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Topic  implements Comparable<Topic> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", updatable = false, nullable = false)
+    private Long id;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private EnumSet<Level> levels;
 
     private String title;
     private String description;
-    private EnumSet<Level> levels;
 
     public Topic() {
         this(null, null, EnumSet.noneOf(Level.class));

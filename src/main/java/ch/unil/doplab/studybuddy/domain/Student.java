@@ -1,10 +1,15 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import jakarta.persistence.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Entity
 public class Student extends User {
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "STUDENT")
     Set<Topic> interests;
 
     public Student() {

@@ -31,7 +31,6 @@ public class Teacher extends User {
         this(firstName, lastName, email, username, password, null);
     }
 
-
     public Teacher(String firstName, String lastName, String email, String username, String password, String biography, int hourlyRate) {
         this(null, firstName, lastName, email, username, password, biography, hourlyRate);
     }
