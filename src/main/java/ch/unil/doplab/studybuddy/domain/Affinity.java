@@ -7,11 +7,6 @@ import java.util.UUID;
 @Entity
 public class Affinity extends Topic {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", updatable = false, nullable = false)
-    private Long id;
-
     @Column(name = "STUDENT")
     private UUID studentID;
 

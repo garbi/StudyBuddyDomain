@@ -248,7 +248,7 @@ class LessonTest {
         Level level = Level.Intermediate;
         var timeslot = albert.firstAvailableTimeslot();
         var lesson = new Lesson(timeslot, topic, level);
-        lesson.getAffinity().getLevels().clear();
+        lesson.getAffinity().clearLevels();
         Exception exception = assertThrows(IllegalStateException.class, () -> lesson.book(albert, paul));
         String expectedMessage = "Timeslot, topic or level cannot be null";
         String actualMessage = exception.getMessage();

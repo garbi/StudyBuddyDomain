@@ -3,6 +3,7 @@ package ch.unil.doplab.studybuddy.domain;
 import jakarta.persistence.*;
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -13,9 +14,10 @@ public class Topic  implements Comparable<Topic> {
     @Column(name = "ID", updatable = false, nullable = false)
     private Long id;
 
-    @ElementCollection
+    @ElementCollection(targetClass = Level.class)
+    @CollectionTable(name = "LEVEL", joinColumns = @JoinColumn(name = "TOPIC"))
     @Enumerated(EnumType.STRING)
-    private EnumSet<Level> levels;
+    private Set<Level> levels;
 
     private String title;
     private String description;
@@ -35,11 +37,36 @@ public class Topic  implements Comparable<Topic> {
     public Topic(String title, String description, EnumSet<Level> levels) {
         this.title = title;
         this.description = description;
-        this.levels = levels;
+        this.levels = convert(levels);
+    }
+
+    public void clearLevels() {
+        this.levels = Set.of();
+    }
+
+    private EnumSet<Level> convert(Set<Level> levels) {
+        if (levels == null) {
+            return null;
+        }
+        if (levels.isEmpty()) {
+            return EnumSet.noneOf(Level.class);
+        }
+        return EnumSet.copyOf(levels);
+    }
+
+    private Set<Level> convert(EnumSet<Level> levels) {
+        if (levels == null) {
+            return null;
+        }
+        return Set.copyOf(levels);
     }
 
     public Topic clone() {
-        return new Topic(this.title, this.description, this.levels);
+        var topic = new Topic();
+        topic.title = this.title;
+        topic.description = this.description;
+        topic.levels = this.levels;
+        return topic;
     }
 
     public String getTitle() {
@@ -59,11 +86,11 @@ public class Topic  implements Comparable<Topic> {
     }
 
     public EnumSet<Level> getLevels() {
-        return levels;
+        return convert(levels);
     }
 
     public void setLevels(EnumSet<Level> levels) {
-        this.levels = levels;
+        this.levels = convert(levels);
     }
 
     public String listLevels() {
