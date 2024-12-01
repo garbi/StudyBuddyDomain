@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,13 +15,18 @@ public class User {
     private UUID uuid;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "LANGUAGE", joinColumns = @JoinColumn(name = "USER"))
+    @CollectionTable(name = "LANGUAGES", joinColumns = @JoinColumn(name = "USER"))
     @Column(name = "LANGUAGE")
     private Set<String> languages;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    /*
+     * The key is the timeslot of the lesson.
+     * Beware that this is not a column in the database.
+     * The value is the lesson itself.
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKey(name = "timeslot")
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "USER")
     private Map<LocalDateTime, Lesson> lessons;
 
     private String firstName;

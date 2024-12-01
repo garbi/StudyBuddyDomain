@@ -1,10 +1,13 @@
 package ch.unil.doplab.studybuddy.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
+@Entity
 public class Teacher extends User {
 
     public static int defaultHourlyRate = 50;
@@ -14,10 +17,19 @@ public class Teacher extends User {
 
     private int hourlyFee;
     private String biography;
-    private SortedSet<LocalDateTime> timeslots;
-    private Map<String,Topic> courses;
     private double ratingAverage;
     private long ratingCount;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "TIMESLOT", joinColumns = @JoinColumn(name = "TEACHER"))
+    @Column(name = "TIMESLOT")
+    private Set<LocalDateTime> timeslots;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKey(name = "title")
+    @JoinColumn(name = "TEACHER")
+    private Map<String,Topic> courses;
+
 
     public Teacher() {
         this(null, null, null, null, null, null, null);
@@ -88,7 +100,7 @@ public class Teacher extends User {
     }
 
     public LocalDateTime firstAvailableTimeslot() {
-        return timeslots.first();
+        return ((SortedSet<LocalDateTime>) timeslots).first();
     }
     public void addTimeslot(LocalDateTime timeslot) {
         timeslots.add(timeslot);

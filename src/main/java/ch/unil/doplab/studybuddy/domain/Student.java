@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 @Entity
 public class Student extends User {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "STUDENT")
     Set<Topic> interests;
 
