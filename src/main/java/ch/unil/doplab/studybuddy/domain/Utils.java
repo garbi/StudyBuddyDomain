@@ -1,6 +1,8 @@
 package ch.unil.doplab.studybuddy.domain;
 
 import java.lang.reflect.Constructor;
+import java.util.Map;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Utils {
@@ -60,5 +62,13 @@ public class Utils {
 
     public static boolean checkPassword(String plainPassword, String hashedPassword) {
         return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
+
+    public static <K, V> void syncMaps(Map<K, V> source, Map<K, V> target) {
+        // Remove keys from target that are not in source
+        target.keySet().retainAll(source.keySet());
+
+        // Add keys from source that are not in target
+        target.putAll(source);
     }
 }

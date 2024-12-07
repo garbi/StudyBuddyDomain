@@ -24,9 +24,18 @@ public class User {
      * Beware that this is not a column in the database.
      * The value is the lesson itself.
      */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @MapKey(name = "timeslot")
-    @JoinColumn(name = "USER")
+
+
+    //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @MapKey(name = "timeslot")
+//    @JoinColumn(name = "USER")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "USER_LESSON", // Join table for mapping User to Lesson
+            joinColumns = @JoinColumn(name = "USER"), // Foreign key for User
+            inverseJoinColumns = @JoinColumn(name = "LESSON") // Foreign key for Lesson
+    )
+    @MapKeyColumn(name = "TIMESLOT") // Column to store the Map key
     private Map<LocalDateTime, Lesson> lessons;
 
     private String firstName;
@@ -68,6 +77,7 @@ public class User {
         this.password = user.password;
         this.balance = user.balance;
         this.languages = user.languages;
+//        Utils.syncMaps(user.lessons, this.lessons);
         this.lessons = user.lessons;
     }
 
@@ -255,7 +265,7 @@ public class User {
     public List<Lesson> getLessons() {
         var sortedLessons = lessons.values().stream()
                 .sorted(Comparator.comparing(Lesson::getTimeslot))
-                .toList(    );
+                .toList();
         return sortedLessons;
     }
 
