@@ -19,16 +19,6 @@ public class User {
     @Column(name = "LANGUAGE")
     private Set<String> languages;
 
-    /*
-     * The key is the timeslot of the lesson.
-     * Beware that this is not a column in the database.
-     * The value is the lesson itself.
-     */
-
-
-    //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @MapKey(name = "timeslot")
-//    @JoinColumn(name = "USER")
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "USER_LESSON", // Join table for mapping User to Lesson
